@@ -1,0 +1,37 @@
+---
+// The index as a ledger: a category row, the recipe rows under it, each
+// ending in the four-engine strip.
+import RecipeRow from './RecipeRow.astro';
+import { type Category, dialects, inCategory, labels, url } from '../lib/site';
+
+interface Props {
+  groups: Category[];
+  heading?: 'link' | 'plain';
+}
+const { groups, heading = 'link' } = Astro.props;
+---
+
+<div class="ledger">
+  <div class="ledger-head" aria-hidden="true">
+    <span>Recipe</span>
+    <span class="strip-head">{dialects.map((d) => <i>{labels[d]}</i>)}</span>
+  </div>
+  {
+    groups.map((c) => (
+      <section class="group" id={c.id} aria-labelledby={`group-${c.id}`}>
+        <div class="group-h">
+          <h2 id={`group-${c.id}`}>
+            {heading === 'link' ? <a href={url(`c/${c.id}/`)}>{c.label}</a> : c.label}
+            <span class="count">{c.count}</span>
+          </h2>
+          <p class="blurb">{c.blurb}</p>
+        </div>
+        <ul class="rows">
+          {inCategory(c.id).map((r) => (
+            <RecipeRow r={r} />
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>

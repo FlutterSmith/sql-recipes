@@ -1,7 +1,7 @@
 ---
 title: "Customers with no orders"
 summary: "Rows in one table with no related row in another, with NOT EXISTS (an anti join)."
-tags: [subquery, join, null]
+tags: [subquery, join, nulls]
 fixture: shop
 ordered: true
 related: [exists-vs-in]

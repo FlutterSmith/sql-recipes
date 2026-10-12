@@ -1,7 +1,7 @@
 ---
 title: "Join parts of a name, skipping NULLs"
 summary: "Build a full name from parts that may be NULL, with CONCAT_WS."
-tags: [text, null]
+tags: [text, nulls]
 ordered: true
 related: [string-aggregation]
 published: 2026-10-12

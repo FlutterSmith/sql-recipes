@@ -1,0 +1,153 @@
+---
+import { getCollection } from 'astro:content';
+
+import Console from '../../components/Console.astro';
+import RecipeRow from '../../components/RecipeRow.astro';
+import RunPanel from '../../components/RunPanel.astro';
+import Base from '../../layouts/Base.astro';
+import { buildDialectBlock, buildSql } from '../../lib/console.mjs';
+import { parseFixture, fixtureCounts } from '../../lib/fixtures.mjs';
+import { categoryLabel, dialects, fixtureBlurb, fixtures, labels, md, plain, type Recipe, recipe, recipes, recipeUrl, sharedOn, tags, url, versions } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const published = new Map(recipes.map((r) => [`${r.category}/${r.slug}`, r]));
+  const entries = await getCollection('recipes');
+  return entries
+    .filter((e) => published.has(e.id))
+    .map((entry) => ({ params: { slug: entry.id.split('/')[1] }, props: { entry, r: published.get(entry.id) as Recipe } }));
+}
+
+const { entry, r } = Astro.props;
+const html = entry.rendered?.html ?? '';
+// Astro logs Markdown render errors and carries on. A recipe page without its
+// prose must fail the build instead; the dialect block and grid are checked
+// again on the built output by the integration in astro.config.mjs.
+if (!html.trim()) throw new Error(`Recipe "${entry.id}" rendered empty. See the [content] errors above.`);
+if (!/id="how-it-works"/.test(html) || !/id="differences"/.test(html)) throw new Error(`Recipe "${entry.id}" lacks "How it works" or "Differences".`);
+if (/cook:sync/.test(html)) throw new Error(`Recipe "${entry.id}" still renders its cook:sync block.`);
+if (!Object.keys(r.queries).length) throw new Error(`Recipe "${entry.id}" has no query for any dialect.`);
+if (!r.expected.length) throw new Error(`Recipe "${entry.id}" has no expected rows.`);
+
+const cut = html.indexOf('<h2');
+const lead = cut === -1 ? html : html.slice(0, cut);
+const sections = cut === -1 ? '' : html.slice(cut);
+
+const block = await buildDialectBlock(r, { dialects, labels, versions });
+const previous = r.previous ? recipe(r.previous) : undefined;
+const next = r.next ? recipe(r.next) : undefined;
+const related = r.related.map(recipe).filter((x): x is Recipe => !!x);
+const shared = sharedOn(r);
+const passing = dialects.filter((d) => r.results[d]?.status === 'pass');
+
+// The fixture (shared dataset) and the recipe's own setup, as console blocks.
+const fixtureSql = r.fixture ? fixtures[r.fixture] : null;
+const fixtureTables = fixtureSql ? parseFixture(fixtureSql) : [];
+const ownSetup = r.setup.postgres.slice(fixtureSql ? fixtureSql.length : 0).trim();
+const fixtureBlock = fixtureSql ? await buildSql({ code: fixtureSql, label: `_fixtures/${r.fixture}.sql` }) : null;
+const setupBlock = ownSetup ? await buildSql({ code: ownSetup, label: 'setup.sql', note: 'runs after the fixture' }) : null;
+---
+
+<Base title={r.title} description={plain(r.summary)} slug={r.slug} page="recipe">
+  <article class="recipe" data-pagefind-body data-pagefind-meta={`category:${categoryLabel(r.category)}`}>
+    <div class="crumbs" data-pagefind-ignore>
+      <span class="path"><a href={url()}>Recipes</a> <i aria-hidden="true">/</i> <a href={url(`c/${r.category}/`)}>{categoryLabel(r.category)}</a></span>
+      <nav aria-label="Previous and next recipe">
+        {previous && <a href={recipeUrl(previous.slug)} data-rel="prev" rel="prev">← {previous.title}</a>}
+        {next && <a href={recipeUrl(next.slug)} data-rel="next" rel="next">{next.title} →</a>}
+      </nav>
+    </div>
+
+    <h1 data-pagefind-meta="title" style={`view-transition-name: t-${r.slug}`}>{r.title}</h1>
+    <p class="summary" set:html={md(r.summary)} />
+    <p class="meta-line" data-pagefind-ignore>
+      <span class="ok" title={passing.map((d) => `${labels[d]} ${versions[d]}`).join(', ')}>✓ passes on {passing.length} of {dialects.length} engines</span>
+      {shared.length > 0 && <span>standard SQL on {shared.map((d) => labels[d]).join(', ')}</span>}
+      <span>{r.ordered ? 'row order matters' : 'row order is free'}</span>
+    </p>
+
+    <div class="prose lead">
+      <Fragment set:html={lead} />
+    </div>
+
+    <div class="setup" data-pagefind-ignore>
+      {
+        fixtureSql && (
+          <details class="fixture">
+            <summary>
+              <span class="label">Starts from</span>
+              <span class="fx">
+                the <code>{r.fixture}</code> fixture: {fixtureCounts(fixtureTables)}.
+                <span class="fx-hint">Show its SQL</span>
+              </span>
+            </summary>
+            <p class="fx-blurb">{fixtureBlurb(r.fixture!)} The same rows on all four engines; see <a href={url('fixtures/')}>Fixtures</a>.</p>
+            <Console tree={fixtureBlock!} />
+          </details>
+        )
+      }
+      {
+        setupBlock && (
+          <details class="fixture">
+            <summary>
+              <span class="label">{fixtureSql ? 'Then' : 'Starts from'}</span>
+              <span class="fx">
+                {fixtureSql ? 'its own setup' : 'a few rows of its own'}: {fixtureCounts(parseFixture(ownSetup)) || 'tables it creates'}.
+                <span class="fx-hint">Show the SQL</span>
+              </span>
+            </summary>
+            <Console tree={setupBlock} />
+          </details>
+        )
+      }
+    </div>
+
+    <Console tree={block} />
+
+    <RunPanel r={r} />
+
+    <div class="prose">
+      <Fragment set:html={sections} />
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="related" data-pagefind-ignore aria-labelledby="related-label">
+          <div class="sec-h">
+            <h2 class="label" id="related-label">Related</h2>
+          </div>
+          <ul class="rows">
+            {related.map((x) => (
+              <RecipeRow r={x} />
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <nav class="recipe-foot" aria-label="More recipes" data-pagefind-ignore>
+      {
+        previous && (
+          <a href={recipeUrl(previous.slug)}>
+            <span class="label">← Previous</span>
+            <span class="t">{previous.title}</span>
+          </a>
+        )
+      }
+      {
+        next && (
+          <a class="next" href={recipeUrl(next.slug)}>
+            <span class="label">Next →</span>
+            <span class="t">{next.title}</span>
+          </a>
+        )
+      }
+    </nav>
+
+    <p class="tags" data-pagefind-ignore>
+      <span class="label">Tags</span>
+      {r.tags.map((t) => <a href={url(`t/${t}/`)} title={tags[t]}>#{t}</a>)}
+      <span class="spacer"></span>
+      <a class="edit" href={`https://github.com/FlutterSmith/sql-recipes/tree/main/recipes/${r.category}/${r.slug}`}>Source on GitHub</a>
+    </p>
+  </article>
+</Base>

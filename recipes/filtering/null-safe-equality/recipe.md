@@ -1,7 +1,7 @@
 ---
 title: "Compare values that may be NULL"
 summary: "Treat two NULLs as equal, with IS NOT DISTINCT FROM, IS, or <=>, depending on the engine."
-tags: [null, join]
+tags: [nulls, join]
 ordered: true
 published: 2026-10-12
 ---

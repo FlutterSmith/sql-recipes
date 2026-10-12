@@ -1,0 +1,17 @@
+---
+import Ledger from '../components/Ledger.astro';
+import Base from '../layouts/Base.astro';
+import { categories, dialects, engine, recipes } from '../lib/site';
+---
+
+<Base title="All recipes" description={`All ${recipes.length} recipes by category, each with its ticks on ${dialects.map(engine).join(', ')}.`}>
+  <header class="page-head">
+    <span class="label">Everything · by category</span>
+    <h1>All {recipes.length} recipes</h1>
+    <p>Each row ends in four marks, one per engine, from the last CI run.</p>
+    <ul class="chips-nav" aria-label="Categories">
+      {categories.map((c) => <li><a href={`#${c.id}`}>{c.label} <span>{c.count}</span></a></li>)}
+    </ul>
+  </header>
+  <Ledger groups={categories} />
+</Base>

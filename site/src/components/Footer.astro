@@ -1,0 +1,18 @@
+---
+import { site, url } from '../lib/site';
+---
+
+<footer class="foot">
+  <div class="wrap">
+    <p>MIT. Results in the ticks come from real engines in CI. <a href={url('about/')}>How that works</a>.</p>
+    <nav aria-label="Footer">
+      <a href={url('all/')}>All recipes</a>
+      <a href={url('matrix/')}>Matrix</a>
+      <a href={site.matrixMd}>MATRIX.md</a>
+      <a href={url('fixtures/')}>Fixtures</a>
+      <a href={url('about/')}>About</a>
+      <a href={url('rss.xml')}>RSS</a>
+      <a href={site.repo}>GitHub</a>
+    </nav>
+  </div>
+</footer>

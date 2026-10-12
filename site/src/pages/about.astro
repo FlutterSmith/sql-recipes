@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+import { browserEngines, dialects, engine, labels, recipes, site, url } from '../lib/site';
+
+const variants = recipes.filter((r) => dialects.some((d) => r.queries[d]?.variant)).length;
+const unsupported = recipes.filter((r) => Object.keys(r.unsupported).length).length;
+---
+
+<Base title="About" description="What “runs” means here, how CI checks every recipe on real servers, which engine versions, and who made it.">
+  <article class="about">
+    <header class="page-head">
+      <span class="label">About</span>
+      <h1>What <em>“runs”</em> means.</h1>
+    </header>
+    <div class="prose">
+      <p>
+        Most SQL cheat sheets show a query and a result that someone typed by hand, once. Here a result is a file, <code>expected.json</code>, and the
+        tick next to an engine means the query was sent to that engine and returned exactly those rows.
+      </p>
+
+      <h2>How it is checked</h2>
+      <ul>
+        <li>
+          Each of the {recipes.length} recipes is a folder: <code>recipe.md</code> for the prose, <code>query.sql</code> for the standard query,
+          <code>query.&lt;dialect&gt;.sql</code> where an engine needs its own idiom ({variants} recipes have one), and <code>expected.json</code> for the
+          rows. Recipes that share data start from one of the <a href={url('fixtures/')}>three fixtures</a>.
+        </li>
+        <li>
+          A Python harness, <code>cook</code>, runs every recipe on every engine. SQLite and DuckDB run in-process. PostgreSQL and MySQL are real servers,
+          started as services in GitHub Actions; each run gets a fresh schema or database that is dropped afterwards.
+        </li>
+        <li>
+          Rows are compared after a small normalisation: numbers to six decimals, timestamps as <code>YYYY-MM-DD HH:MM:SS</code>, JSON text parsed. A
+          recipe that marks <code>ordered: true</code> must return rows in that order; otherwise order is free.
+        </li>
+        <li>
+          CI runs the matrix on three pairs of server versions (PostgreSQL 16, 17 and 18 with MySQL 8.0, 8.4 and 9), and a weekly job tries the newest
+          releases. A page whose query fails on any engine doesn't ship.
+        </li>
+        <li>
+          {unsupported} {unsupported === 1 ? 'recipe says' : 'recipes say'} <code>unsupported</code> for an engine that has no way to express it. That shows
+          as a struck-through tab with the reason, and as – in the <a href={url('matrix/')}>matrix</a>.
+        </li>
+      </ul>
+
+      <h2>The engines on this page</h2>
+      <p>
+        The ticks on every page come from the run that built it: {dialects.map(engine).join(', ')}. The <b>Run in your browser</b> button loads a real
+        engine compiled to WebAssembly, so you can edit a query and see the rows change:
+      </p>
+      <ul>
+        {
+          dialects.map((d) => (
+            <li>
+              <b>{labels[d]}</b>:{' '}
+              {browserEngines[d]
+                ? `${browserEngines[d]!.lib}, about ${browserEngines[d]!.size} on first use, cached by the browser afterwards.`
+                : 'no WebAssembly build exists, so the panel says so. Its ticks come from CI alone.'}
+            </li>
+          ))
+        }
+      </ul>
+      <p>
+        The browser engines are the same database code as the servers, but not the same version as CI, and the live comparison with the expected rows
+        uses the same normalisation the harness does.
+      </p>
+
+      <h2>License and author</h2>
+      <p>
+        MIT, for the recipes, the harness and this site. Made by {site.author} (<a href="https://github.com/FlutterSmith">FlutterSmith</a> on GitHub),
+        who also keeps <a href="https://fluttersmith.github.io/tips/">tips</a> and <a href="https://fluttersmith.github.io/py-snippets/">py-snippets</a>.
+        The source, the tests and the site are on <a href={site.repo}>GitHub</a>; a recipe that is wrong on some engine version is a bug, and an issue
+        with the version is enough.
+      </p>
+    </div>
+  </article>
+</Base>

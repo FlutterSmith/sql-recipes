@@ -1,0 +1,62 @@
+---
+import { browserEngines, dialects, engine, labels, type Recipe, versions } from '../lib/site';
+
+interface Props {
+  r: Recipe;
+}
+const { r } = Astro.props;
+const data = JSON.stringify({
+  slug: r.slug,
+  ordered: r.ordered,
+  expected: r.expected,
+  setup: r.setup,
+  queries: Object.fromEntries(dialects.filter((d) => r.queries[d]).map((d) => [d, r.queries[d]!.sql])),
+  files: Object.fromEntries(dialects.filter((d) => r.queries[d]).map((d) => [d, r.queries[d]!.file])),
+  labels,
+  unsupported: r.unsupported,
+  versions,
+});
+const sizes = dialects
+  .filter((d) => browserEngines[d])
+  .map((d) => `${labels[d]} ${browserEngines[d]!.size}`)
+  .join(', ');
+---
+
+<div class="run-row" data-pagefind-ignore>
+  <button class="btn-run" id="run-btn" type="button" aria-controls="runner" aria-expanded="false" aria-keyshortcuts="e">
+    <span aria-hidden="true">▶</span> Run in your browser
+  </button>
+  <span class="run-note">
+    A real engine loads only when you click: {sizes}, cached after the first time; DuckDB fetches its JSON extension separately. MySQL has no WebAssembly build.
+  </span>
+</div>
+
+<section class="console runner" id="runner" hidden aria-labelledby="runner-title" data-pagefind-ignore>
+  <div class="console-head">
+    <span class="file" id="runner-title">in your browser</span>
+    <div class="run-engines" role="group" aria-label="Engine">
+      {
+        dialects.map((d) => (
+          <button type="button" class="run-eng" data-engine={d} aria-pressed="false" disabled>
+            {labels[d]}
+          </button>
+        ))
+      }
+    </div>
+    <span class="spacer"></span>
+    <button class="copy" type="button" id="run-reset">Reset</button>
+  </div>
+  <p class="run-progress" id="run-progress">Pick an engine.</p>
+  <div class="ed">
+    <label class="ed-label" for="run-sql">query <span id="run-sql-note"></span></label>
+    <textarea id="run-sql" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" rows="10" aria-describedby="run-help"></textarea>
+  </div>
+  <div class="bar">
+    <button type="button" id="run-go" disabled>Run <kbd class="mod">Ctrl</kbd><kbd>↵</kbd></button>
+    <span id="run-status" class="run-status" role="status" aria-live="polite"></span>
+  </div>
+  <div class="run-out" id="run-out" aria-label="Live result"></div>
+  <p class="visually-hidden" id="run-help">Tab inserts four spaces. Press Escape, then Tab, to leave the editor. Control or Command plus Enter runs the query. The setup for the recipe, including its fixture, runs first, in a fresh in-memory database.</p>
+  <p class="visually-hidden" id="run-mysql">{`MySQL runs in CI only; the ticks above are from ${engine('mysql')}.`}</p>
+</section>
+<script type="application/json" id="run-data" set:html={data} />

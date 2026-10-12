@@ -1,0 +1,88 @@
+---
+import Base from '../layouts/Base.astro';
+import { engineState, engineTitle } from '../lib/console.mjs';
+import { categories, dialects, engine, inCategory, labels, recipes, recipeUrl, site, url, versions } from '../lib/site';
+
+const MARKS: Record<string, string> = { pass: '✓', variant: '✓', unsupported: '–', fail: '✗', unknown: '·', none: '·' };
+const counts = Object.fromEntries(dialects.map((d) => [d, recipes.filter((r) => r.results[d]?.status === 'pass').length]));
+---
+
+<Base title="The matrix" description={`Every recipe on every engine: ${dialects.map(engine).join(', ')}. Which run the shared query, which need a variant, which can't.`} page="matrix">
+  <header class="page-head">
+    <span class="label">Matrix · {recipes.length} × {dialects.length}</span>
+    <h1>Every recipe, <em>every engine.</em></h1>
+    <p>
+      A tick means the query returned exactly the expected rows on that engine, in CI, on the version in the column header. The same table lives in the
+      repository as <a href={site.matrixMd}>MATRIX.md</a>.
+    </p>
+  </header>
+
+  <div class="filter" data-pagefind-ignore>
+    <label class="visually-hidden" for="mx-q">Filter recipes</label>
+    <input id="mx-q" type="search" placeholder="Filter by title, category or tag" autocomplete="off" spellcheck="false" />
+    <span class="filter-count" id="mx-count" role="status" aria-live="polite">{recipes.length} recipes</span>
+  </div>
+
+  <div class="mx-scroll">
+    <div class="mx-inner">
+    <table class="matrix" id="mx">
+      <thead>
+        <tr>
+          <th scope="col" class="mx-recipe">Recipe</th>
+          {
+            dialects.map((d) => (
+              <th scope="col" class="mx-eng">
+                <span class="mx-name">{labels[d]}</span>
+                <span class="mx-ver">{versions[d]}</span>
+              </th>
+            ))
+          }
+        </tr>
+      </thead>
+      {
+        categories.map((c) => (
+          <tbody data-group={c.id}>
+            <tr class="mx-group">
+              <th scope="rowgroup" colspan={dialects.length + 1}>
+                <a href={url(`c/${c.id}/`)}>{c.label}</a>
+                <span class="count">{c.count}</span>
+              </th>
+            </tr>
+            {inCategory(c.id).map((r) => (
+              <tr data-text={`${r.title} ${c.label} ${r.tags.join(' ')} ${r.slug}`.toLowerCase()}>
+                <th scope="row">
+                  <a href={recipeUrl(r.slug)}>{r.title}</a>
+                </th>
+                {dialects.map((d) => {
+                  const s = engineState(r, d);
+                  const title = engineTitle(s, labels[d], versions[d]);
+                  return (
+                    <td class={`mx-cell ${s.kind}`} title={title}>
+                      <span aria-hidden="true">{MARKS[s.kind]}</span>
+                      <span class="visually-hidden">{title}</span>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        ))
+      }
+      <tfoot>
+        <tr>
+          <th scope="row">Passing</th>
+          {dialects.map((d) => <td class="mx-cell n">{counts[d]}/{recipes.length}</td>)}
+        </tr>
+      </tfoot>
+    </table>
+    </div>
+  </div>
+  <p class="mx-empty" id="mx-empty" hidden>No recipe matches. Try a word from a title, like <code>duplicates</code>.</p>
+
+  <dl class="legend" aria-label="Legend">
+    <div><dt class="pass">✓</dt><dd>The shared, standard-SQL query passes.</dd></div>
+    <div><dt class="variant">✓</dt><dd>A variant written for that engine passes; the tab on the recipe page carries the same dot.</dd></div>
+    <div><dt class="unsupported">–</dt><dd>The engine can't do it. Hover or focus the cell for the reason; the recipe page says more.</dd></div>
+    <div><dt class="unknown">·</dt><dd>Not run on the machine that built this page.</dd></div>
+  </dl>
+</Base>

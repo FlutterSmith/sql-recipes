@@ -1,0 +1,39 @@
+---
+import RecipeRow from '../../components/RecipeRow.astro';
+import Base from '../../layouts/Base.astro';
+import { recipes, tags, url } from '../../lib/site';
+
+export function getStaticPaths() {
+  return Object.entries(tags)
+    .filter(([tag]) => recipes.some((r) => r.tags.includes(tag)))
+    .map(([tag, description]) => ({ params: { tag }, props: { tag, description } }));
+}
+
+const { tag, description } = Astro.props;
+const list = recipes.filter((r) => r.tags.includes(tag));
+const used = Object.keys(tags).filter((t) => recipes.some((r) => r.tags.includes(t)));
+---
+
+<Base title={`#${tag}`} description={`${description}: ${list.length} SQL recipes tested on four engines.`}>
+  <header class="page-head">
+    <span class="label">Tag · {list.length} {list.length === 1 ? 'recipe' : 'recipes'}</span>
+    <h1>#{tag}</h1>
+    <p>{description}.</p>
+    <ul class="chips-nav" aria-label="Tags">
+      {
+        used.map((t) => (
+          <li>
+            <a href={url(`t/${t}/`)} aria-current={t === tag ? 'page' : undefined}>
+              #{t}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </header>
+  <div class="ledger ledger-flat">
+    <ul class="rows">
+      {list.map((r) => <RecipeRow r={r} />)}
+    </ul>
+  </div>
+</Base>

@@ -1,0 +1,45 @@
+---
+import Console from '../components/Console.astro';
+import Ledger from '../components/Ledger.astro';
+import Base from '../layouts/Base.astro';
+import { buildDialectBlock } from '../lib/console.mjs';
+import { categories, dialects, engine, formatDate, labels, recipe, recipes, recipeUrl, site, url, versions } from '../lib/site';
+
+const total = recipes.length;
+const verified = site.verifiedAt ? formatDate(site.verifiedAt) : null;
+const hero = recipe('latest-row-per-group') ?? recipes[0];
+const heroBlock = await buildDialectBlock(hero, { dialects, labels, versions, id: 'hero' });
+const engines = dialects.map(engine);
+---
+
+<Base description={`${total} SQL recipes with one tested query per engine: SQLite, PostgreSQL, MySQL and DuckDB. Results checked in CI on real servers.`} page="home">
+  <section class="hero">
+    <div class="hero-text">
+      <h1>SQL recipes that run on <em>four databases.</em></h1>
+      <p class="lede">
+        {total} problems, from top-N-per-group to upserts and gaps-and-islands. One tested query per engine, and the rows it returns, checked in CI on real servers.
+      </p>
+      <div class="cta">
+        <button class="btn btn-main" type="button" data-random>Random recipe <kbd>r</kbd></button>
+        <a class="btn btn-ghost" href={url('matrix/')}>The matrix <span aria-hidden="true">▸</span></a>
+      </div>
+      <dl class="stats" aria-label="What is checked">
+        <div><dt>Recipes</dt><dd>{total}</dd></div>
+        <div><dt>Engines</dt><dd>{engines.join(' · ')}</dd></div>
+        <div><dt>Checked</dt><dd>{verified ? `on every push, last ${verified}` : 'on every push'}</dd></div>
+      </dl>
+    </div>
+    <div class="hero-console" data-anim="wait">
+      <p class="hero-cap"><a href={recipeUrl(hero.slug)}>{hero.title}</a> <span class="hero-cap-sub">one of {total} recipes</span></p>
+      <Console tree={heroBlock} />
+    </div>
+  </section>
+
+  <section class="index" aria-labelledby="index-title">
+    <div class="sec-h">
+      <h2 class="label" id="index-title">All recipes, by category</h2>
+      <a class="label" href={url('all/')}>{total} recipes</a>
+    </div>
+    <Ledger groups={categories} />
+  </section>
+</Base>

@@ -1,0 +1,11 @@
+---
+// Server-renders a hast tree built by lib/console.mjs.
+import { toHtml } from 'hast-util-to-html';
+
+interface Props {
+  tree: Parameters<typeof toHtml>[0];
+}
+const { tree } = Astro.props;
+---
+
+<Fragment set:html={toHtml(tree)} />

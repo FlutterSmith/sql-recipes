@@ -1,0 +1,23 @@
+---
+import { toHtml } from 'hast-util-to-html';
+
+import { buildStrip } from '../lib/console.mjs';
+import { dialects, labels, md, type Recipe, recipeUrl, versions } from '../lib/site';
+
+interface Props {
+  r: Recipe;
+  showCategory?: boolean;
+}
+const { r } = Astro.props;
+const strip = toHtml(buildStrip(r, { dialects, labels, versions }));
+---
+
+<li>
+  <a class="row" href={recipeUrl(r.slug)}>
+    <span class="row-main">
+      <span class="row-title" style={`view-transition-name: t-${r.slug}`}>{r.title}</span>
+      <span class="row-sum" set:html={md(r.summary)} />
+    </span>
+    <Fragment set:html={strip} />
+  </a>
+</li>

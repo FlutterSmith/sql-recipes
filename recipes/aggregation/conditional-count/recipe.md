@@ -1,7 +1,7 @@
 ---
 title: "Count rows that meet a condition"
 summary: "Count all orders and only the paid ones in one pass, with FILTER or CASE."
-tags: [group-by, null]
+tags: [group-by, nulls]
 fixture: shop
 ordered: true
 related: [pivot-with-case]

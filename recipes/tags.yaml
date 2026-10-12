@@ -3,7 +3,7 @@ window: Window functions
 cte: Common table expressions
 join: Joins
 subquery: Subqueries
-null: NULL handling
+nulls: NULL handling
 date: Dates and times
 text: Text and strings
 json: JSON

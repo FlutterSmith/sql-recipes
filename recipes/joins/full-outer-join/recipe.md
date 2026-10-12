@@ -1,7 +1,7 @@
 ---
 title: "Full outer join"
 summary: "Rows from both tables, matched where possible, with FULL OUTER JOIN or a UNION of two outer joins."
-tags: [join, null]
+tags: [join, nulls]
 ordered: true
 related: [rows-with-no-match, set-difference]
 published: 2026-10-12

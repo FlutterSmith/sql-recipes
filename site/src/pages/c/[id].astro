@@ -1,0 +1,31 @@
+---
+import Ledger from '../../components/Ledger.astro';
+import Base from '../../layouts/Base.astro';
+import { categories, url } from '../../lib/site';
+
+export function getStaticPaths() {
+  return categories.map((c) => ({ params: { id: c.id }, props: { category: c } }));
+}
+
+const { category } = Astro.props;
+---
+
+<Base title={category.label} description={`${category.blurb} ${category.count} recipes, each tested on four engines.`}>
+  <header class="page-head">
+    <span class="label">Category · {category.count} recipes</span>
+    <h1>{category.label}</h1>
+    <p>{category.blurb}</p>
+    <ul class="chips-nav" aria-label="Categories">
+      {
+        categories.map((c) => (
+          <li>
+            <a href={url(`c/${c.id}/`)} aria-current={c.id === category.id ? 'page' : undefined}>
+              {c.label} <span>{c.count}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </header>
+  <Ledger groups={[category]} heading="plain" />
+</Base>

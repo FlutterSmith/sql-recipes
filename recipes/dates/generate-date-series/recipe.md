@@ -1,7 +1,7 @@
 ---
 title: "Fill missing dates"
 summary: "One row per calendar day, with the reading or NULL, from a generated series of dates."
-tags: [date, cte, join, null]
+tags: [date, cte, join, nulls]
 fixture: sensors
 ordered: true
 related: [gaps-and-islands, number-series]

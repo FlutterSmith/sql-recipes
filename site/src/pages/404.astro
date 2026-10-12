@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+import { recipes, recipeUrl, url } from '../lib/site';
+
+// Every name the HINT can suggest: slugs, with their titles for the link text.
+const names = recipes.map((r) => [r.slug, r.title] as const);
+const fallback = recipes[0];
+---
+
+<Base title="Not found" description="This page doesn’t exist." noindex page="404">
+  <div class="nf">
+    <figure class="console nf-console">
+      <pre class="psql" aria-label="Error"><span class="err">ERROR:  relation "<span id="nf-name">this_page</span>" does not exist</span>
+<span class="dim">LINE 1: SELECT * FROM <span id="nf-name2">this_page</span>;</span>
+<span class="dim" id="nf-caret">                      ^</span>
+<span class="hint">HINT:  Perhaps you meant "<a id="nf-guess" href={recipeUrl(fallback.slug)}>{fallback.slug}</a>".</span></pre>
+    </figure>
+    <div class="nf-text">
+      <h1>This page doesn’t exist.</h1>
+      <p>The hint above is the recipe whose name is closest to the address you typed. Press <kbd>/</kbd> to search, or try:</p>
+      <ul>
+        <li><a href={url('all/')}>All recipes</a></li>
+        <li><a href={url('matrix/')}>The matrix</a></li>
+        <li><a href={url()}>The home page</a></li>
+      </ul>
+    </div>
+  </div>
+  <script type="application/json" id="nf-names" set:html={JSON.stringify(names)} />
+  <script>
+    // A real HINT: Levenshtein distance from the last URL segment to every recipe slug.
+    function distance(a: string, b: string): number {
+      const row = Array.from({ length: b.length + 1 }, (_, j) => j);
+      for (let i = 1; i <= a.length; i++) {
+        let prev = row[0];
+        row[0] = i;
+        for (let j = 1; j <= b.length; j++) {
+          const cur = row[j];
+          row[j] = Math.min(row[j] + 1, row[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1));
+          prev = cur;
+        }
+      }
+      return row[b.length];
+    }
+    const names: [string, string][] = JSON.parse(document.getElementById('nf-names')?.textContent ?? '[]');
+    const base = document.documentElement.dataset.base ?? '/';
+    const segment = decodeURIComponent(location.pathname.split('/').filter(Boolean).pop() ?? '')
+      .replace(/\.(html?|sql|md)$/i, '')
+      .toLowerCase();
+    if (segment && names.length) {
+      const target = segment.replace(/[_\s]+/g, '-');
+      let best = names[0];
+      let score = Infinity;
+      for (const n of names) {
+        const d = distance(target, n[0]) / Math.max(target.length, n[0].length);
+        if (d < score) {
+          score = d;
+          best = n;
+        }
+      }
+      const guess = document.getElementById('nf-guess') as HTMLAnchorElement | null;
+      if (guess) {
+        guess.textContent = best[0];
+        guess.href = `${base}r/${best[0]}/`;
+      }
+      const ident = segment.replace(/[^a-z0-9_-]/g, '_').slice(0, 48);
+      for (const id of ['nf-name', 'nf-name2']) {
+        const el = document.getElementById(id);
+        if (el && ident) el.textContent = ident;
+      }
+      const caret = document.getElementById('nf-caret');
+      if (caret) caret.textContent = ' '.repeat('LINE 1: SELECT * FROM '.length) + '^';
+    }
+  </script>
+</Base>

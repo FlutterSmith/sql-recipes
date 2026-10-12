@@ -1,0 +1,74 @@
+---
+import Console from '../components/Console.astro';
+import Base from '../layouts/Base.astro';
+import { buildGrid, buildSql } from '../lib/console.mjs';
+import { fixtureCounts, parseFixture } from '../lib/fixtures.mjs';
+import { fixtureBlurb, fixtures, recipes, recipeUrl, url } from '../lib/site';
+
+const order = ['shop', 'hr', 'sensors'].filter((n) => fixtures[n]);
+const names = [...order, ...Object.keys(fixtures).filter((n) => !order.includes(n))];
+const sets = await Promise.all(
+  names.map(async (name) => {
+    const sql = fixtures[name];
+    const tables = parseFixture(sql);
+    return {
+      name,
+      sql,
+      tables,
+      blurb: fixtureBlurb(name),
+      counts: fixtureCounts(tables),
+      block: await buildSql({ code: sql, label: `_fixtures/${name}.sql` }),
+      grids: tables.map((t) => ({ name: t.name, tree: buildGrid(t.rows.map((row) => Object.fromEntries(t.columns.map((c, i) => [c, row[i]]))), { caption: `Rows of ${t.name}` }) })),
+      used: recipes.filter((r) => r.fixture === name),
+    };
+  }),
+);
+---
+
+<Base title="Fixtures" description="The three datasets every recipe starts from: a web shop, a company and two sensors. Their DDL and rows, so the results on each page can be read." page="fixtures">
+  <header class="page-head">
+    <span class="label">Fixtures · {sets.length} datasets</span>
+    <h1>The data <em>behind the results.</em></h1>
+    <p>
+      Every recipe that names a fixture starts from exactly these rows, created fresh on each engine before its query runs. Knowing them makes the result
+      grids readable: when a page says customer 3's latest order is number 8, this is where that comes from.
+    </p>
+    <ul class="chips-nav" aria-label="Datasets">
+      {sets.map((s) => <li><a href={`#${s.name}`}>{s.name} <span>{s.tables.length} tables</span></a></li>)}
+    </ul>
+  </header>
+
+  {
+    sets.map((s) => (
+      <section class="fixture-set" id={s.name} aria-labelledby={`fx-${s.name}`}>
+        <div class="fx-head">
+          <h2 id={`fx-${s.name}`}>
+            <code>{s.name}</code>
+          </h2>
+          <p>
+            {s.blurb} Tables: {s.counts}. Used by {s.used.length} {s.used.length === 1 ? 'recipe' : 'recipes'}:{' '}
+            {s.used.map((r, i) => (
+              <>
+                {i > 0 && ', '}
+                <a href={recipeUrl(r.slug)}>{r.title}</a>
+              </>
+            ))}
+            .
+          </p>
+        </div>
+        <Console tree={s.block} />
+        <div class="fx-grids">
+          {s.grids.map((g) => (
+            <figure class="console fx-grid">
+              <figcaption class="console-head">
+                <span class="file">{g.name}</span>
+              </figcaption>
+              <Console tree={g.tree} />
+            </figure>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+  <p class="fx-foot">The fixtures are plain SQL in <a href="https://github.com/FlutterSmith/sql-recipes/tree/main/recipes/_fixtures">recipes/_fixtures</a>. MySQL gets <code>TIMESTAMP</code> rewritten to <code>DATETIME</code>; nothing else changes per engine. Recipes without a fixture create their own few rows; the <a href={url('all/')}>recipe page</a> shows that setup.</p>
+</Base>
