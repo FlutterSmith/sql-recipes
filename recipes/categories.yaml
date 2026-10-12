@@ -1,0 +1,30 @@
+- id: filtering
+  label: Filtering and lookup
+  blurb: "Picking the right rows: the latest per group, rows with no match, fuzzy search."
+- id: aggregation
+  label: Aggregation
+  blurb: "Counting, summing and concatenating, with conditions and percentages."
+- id: windows
+  label: Window functions
+  blurb: "Running totals, rankings, neighbours and islands, without self-joins."
+- id: joins
+  label: Joins and sets
+  blurb: "Outer joins, anti joins, lateral joins and set operations."
+- id: dedupe
+  label: Duplicates and upserts
+  blurb: "Finding, deleting and preventing duplicate rows."
+- id: dates
+  label: Dates and times
+  blurb: "Truncating, bucketing, differencing and generating dates."
+- id: strings
+  label: Strings
+  blurb: "Splitting, joining, padding and cleaning text."
+- id: json
+  label: JSON
+  blurb: "Reading fields and arrays out of JSON, and building it."
+- id: recursive
+  label: Recursive queries
+  blurb: "Trees, paths and number series with recursive CTEs."
+- id: pagination
+  label: Pagination
+  blurb: "Offset pages, keyset pages, and the difference in cost."

@@ -1,0 +1,13 @@
+group-by: Aggregates and grouping
+window: Window functions
+cte: Common table expressions
+join: Joins
+subquery: Subqueries
+null: NULL handling
+date: Dates and times
+text: Text and strings
+json: JSON
+upsert: Insert-or-update
+delete: Deleting rows
+ranking: Ranking rows
+performance: Query cost

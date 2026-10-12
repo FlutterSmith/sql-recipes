@@ -1,0 +1,23 @@
+# Local PostgreSQL and MySQL for `cook run`, with the same credentials CI uses.
+#
+#   docker compose up -d
+#   export PGURL=postgresql://postgres:postgres@127.0.0.1:5432/postgres
+#   export MYSQL_URL=mysql://root:root@127.0.0.1:3306
+#   uv run cook run
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports: ['5432:5432']
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports: ['3306:3306']
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '-proot']
+      interval: 5s

@@ -1,0 +1,61 @@
+[project]
+name = "sql-recipes"
+version = "0.1.0"
+description = "SQL recipes that run on four databases: SQLite, PostgreSQL, MySQL and DuckDB, tested in CI."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Ahmed Hamdy" }]
+requires-python = ">=3.12"
+dependencies = []
+
+[project.urls]
+Homepage = "https://fluttersmith.github.io/sql-recipes/"
+Source = "https://github.com/FlutterSmith/sql-recipes"
+
+[project.scripts]
+cook = "cook.cli:main"
+
+[dependency-groups]
+dev = [
+    "duckdb>=1.4",
+    "mypy>=1.18",
+    "psycopg[binary]>=3.2",
+    "pymysql>=1.1",
+    "pytest>=8.4",
+    "pyyaml>=6.0.2",
+    "ruff>=0.13",
+    "types-pymysql>=1.1",
+    "types-pyyaml>=6.0.12",
+]
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tools/cook"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+src = ["tools", "tests"]
+extend-exclude = ["*.md"]
+
+[tool.ruff.lint]
+allowed-confusables = ["–"]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "RUF", "PT", "PTH", "RET", "D"]
+ignore = ["D100", "D102", "D103", "D104", "D105", "D107", "D203", "D213", "D401"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+mypy_path = ["tools"]
+files = ["tools", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--strict-markers", "-ra"]
