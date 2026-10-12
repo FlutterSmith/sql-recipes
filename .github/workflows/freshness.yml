@@ -1,0 +1,73 @@
+name: Freshness
+
+# Weekly: do the recipes still pass on the newest engine releases, including
+# the next major versions while they're in beta? If not, open (or update)
+# one issue.
+on:
+  schedule:
+    - cron: '27 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  PGURL: postgresql://postgres:postgres@127.0.0.1:5432/postgres
+  MYSQL_URL: mysql://root:root@127.0.0.1:3306
+
+jobs:
+  newest:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+      - id: check
+        name: Upgrade the drivers and in-process engines, then run everything
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          {
+            uv lock --upgrade && uv sync
+            uv run python -c "import duckdb, sqlite3; print('DuckDB', duckdb.__version__, '· SQLite', sqlite3.sqlite_version)"
+            uv run cook run
+          } 2>&1 | tee drift.log
+      - name: Open or update the drift issue
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "The weekly run against the newest engine releases failed."
+            echo "Recipes affected by these errors need a new variant or a note."
+            echo; echo '<details><summary>Log</summary>'; echo; echo '```'
+            tail -c 60000 drift.log; echo '```'; echo '</details>'
+          } > body.md
+          number=$(gh issue list --label engine-drift --state open --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body-file body.md
+          else
+            gh label create engine-drift --color F2B705 --description "A recipe no longer passes on the newest engine release" 2>/dev/null || true
+            gh issue create --title "Engine drift: recipes fail on the newest releases" --label engine-drift --body-file body.md
+          fi

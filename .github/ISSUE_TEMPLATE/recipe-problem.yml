@@ -1,0 +1,18 @@
+name: Problem in a recipe
+description: A query fails, returns something else, or the explanation is wrong.
+labels: [recipe-bug]
+body:
+  - type: input
+    id: recipe
+    attributes:
+      label: Which recipe, on which engine and version?
+      placeholder: latest-row-per-group on MySQL 8.0.36
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happens?
+      description: The error message, or the rows you got instead.
+    validations:
+      required: true

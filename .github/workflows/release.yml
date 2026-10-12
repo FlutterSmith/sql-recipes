@@ -1,0 +1,35 @@
+name: Release
+
+# Run by hand after bumping the version in pyproject.toml and adding its
+# section to CHANGELOG.md. Tags main and publishes the release notes.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Read the version and its changelog section
+        id: notes
+        run: |
+          version=$(sed -nE 's/^version = "(.+)"/\1/p' pyproject.toml)
+          awk -v v="$version" '
+            $0 ~ "^## " v " " { on = 1; next }
+            /^## / && on { exit }
+            on { print }
+          ' CHANGELOG.md > notes.md
+          test -s notes.md || { echo "CHANGELOG.md has no section for $version"; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Tag and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.notes.outputs.version }}
+        run: |
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "v$VERSION is already released"; exit 1
+          fi
+          gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --notes-file notes.md

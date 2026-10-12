@@ -1,0 +1,11 @@
+name: Recipe idea
+description: A problem worth a tested answer on all four engines.
+labels: [recipe-idea]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What's the problem to solve?
+      description: One sentence, plus the engine where you hit it and how you solved it there, if you did.
+    validations:
+      required: true
