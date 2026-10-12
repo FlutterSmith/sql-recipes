@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Ada Lovelace",
+    "spent": 267.92
+  },
+  {
+    "id": 2,
+    "name": "Grace Hopper",
+    "spent": 213
+  },
+  {
+    "id": 3,
+    "name": "Linus Torvalds",
+    "spent": 388.5
+  },
+  {
+    "id": 4,
+    "name": "Margaret Hamilton",
+    "spent": 0
+  }
+]

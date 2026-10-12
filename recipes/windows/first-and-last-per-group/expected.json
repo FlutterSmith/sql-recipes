@@ -1,0 +1,12 @@
+[
+  {
+    "sensor": "a",
+    "opening": 20,
+    "latest": 18.5
+  },
+  {
+    "sensor": "b",
+    "opening": 30,
+    "latest": 32
+  }
+]

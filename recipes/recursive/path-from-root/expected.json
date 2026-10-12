@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Nadia",
+    "path": "Nadia"
+  },
+  {
+    "name": "Omar",
+    "path": "Nadia > Omar"
+  },
+  {
+    "name": "Quentin",
+    "path": "Nadia > Omar > Quentin"
+  },
+  {
+    "name": "Priya",
+    "path": "Nadia > Priya"
+  },
+  {
+    "name": "Rosa",
+    "path": "Nadia > Rosa"
+  },
+  {
+    "name": "Sam",
+    "path": "Nadia > Rosa > Sam"
+  },
+  {
+    "name": "Tariq",
+    "path": "Nadia > Rosa > Tariq"
+  },
+  {
+    "name": "Uma",
+    "path": "Nadia > Uma"
+  },
+  {
+    "name": "Viktor",
+    "path": "Nadia > Uma > Viktor"
+  }
+]

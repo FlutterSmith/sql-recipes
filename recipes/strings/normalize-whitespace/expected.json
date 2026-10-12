@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "cleaned": "hello world"
+  },
+  {
+    "id": 2,
+    "cleaned": "one two three"
+  },
+  {
+    "id": 3,
+    "cleaned": "tidy"
+  }
+]

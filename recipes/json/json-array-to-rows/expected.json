@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "tag": "login"
+  },
+  {
+    "id": 1,
+    "tag": "web"
+  },
+  {
+    "id": 2,
+    "tag": "purchase"
+  }
+]

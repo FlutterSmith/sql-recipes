@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Nadia",
+    "depth": 0
+  },
+  {
+    "id": 2,
+    "name": "Omar",
+    "depth": 1
+  },
+  {
+    "id": 3,
+    "name": "Priya",
+    "depth": 1
+  },
+  {
+    "id": 5,
+    "name": "Rosa",
+    "depth": 1
+  },
+  {
+    "id": 8,
+    "name": "Uma",
+    "depth": 1
+  },
+  {
+    "id": 4,
+    "name": "Quentin",
+    "depth": 2
+  },
+  {
+    "id": 6,
+    "name": "Sam",
+    "depth": 2
+  },
+  {
+    "id": 7,
+    "name": "Tariq",
+    "depth": 2
+  },
+  {
+    "id": 9,
+    "name": "Viktor",
+    "depth": 2
+  }
+]

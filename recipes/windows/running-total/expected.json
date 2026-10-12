@@ -1,0 +1,38 @@
+[
+  {
+    "order_id": 1,
+    "ordered_at": "2024-02-01 09:15:00",
+    "total": 134.97,
+    "running_total": 134.97
+  },
+  {
+    "order_id": 2,
+    "ordered_at": "2024-02-14 18:40:00",
+    "total": 49,
+    "running_total": 183.97
+  },
+  {
+    "order_id": 3,
+    "ordered_at": "2024-02-20 11:05:00",
+    "total": 164,
+    "running_total": 347.97
+  },
+  {
+    "order_id": 5,
+    "ordered_at": "2024-03-10 16:30:00",
+    "total": 159.5,
+    "running_total": 507.47
+  },
+  {
+    "order_id": 7,
+    "ordered_at": "2024-04-02 10:10:00",
+    "total": 83.95,
+    "running_total": 591.42
+  },
+  {
+    "order_id": 8,
+    "ordered_at": "2024-04-21 19:45:00",
+    "total": 170,
+    "running_total": 761.42
+  }
+]

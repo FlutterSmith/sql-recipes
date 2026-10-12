@@ -1,0 +1,32 @@
+[
+  {
+    "category": "courses",
+    "name": "Python course",
+    "price": 59,
+    "place": 1
+  },
+  {
+    "category": "courses",
+    "name": "SQL course",
+    "price": 49,
+    "place": 2
+  },
+  {
+    "category": "hardware",
+    "name": "Mechanical keyboard",
+    "price": 120,
+    "place": 1
+  },
+  {
+    "category": "hardware",
+    "name": "Monitor arm",
+    "price": 85,
+    "place": 2
+  },
+  {
+    "category": "merch",
+    "name": "Sticker pack",
+    "price": 4.99,
+    "place": 1
+  }
+]

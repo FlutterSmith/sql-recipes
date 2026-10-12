@@ -1,0 +1,20 @@
+[
+  {
+    "customer_id": 1,
+    "order_id": 7,
+    "ordered_at": "2024-04-02 10:10:00",
+    "status": "paid"
+  },
+  {
+    "customer_id": 2,
+    "order_id": 6,
+    "ordered_at": "2024-03-15 12:00:00",
+    "status": "refunded"
+  },
+  {
+    "customer_id": 3,
+    "order_id": 8,
+    "ordered_at": "2024-04-21 19:45:00",
+    "status": "paid"
+  }
+]

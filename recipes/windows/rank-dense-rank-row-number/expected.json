@@ -1,0 +1,65 @@
+[
+  {
+    "name": "Nadia",
+    "salary": 9800,
+    "row_num": 1,
+    "rnk": 1,
+    "dense": 1
+  },
+  {
+    "name": "Omar",
+    "salary": 7200,
+    "row_num": 2,
+    "rnk": 2,
+    "dense": 2
+  },
+  {
+    "name": "Priya",
+    "salary": 7200,
+    "row_num": 3,
+    "rnk": 2,
+    "dense": 2
+  },
+  {
+    "name": "Rosa",
+    "salary": 6400,
+    "row_num": 4,
+    "rnk": 4,
+    "dense": 3
+  },
+  {
+    "name": "Quentin",
+    "salary": 5100,
+    "row_num": 5,
+    "rnk": 5,
+    "dense": 4
+  },
+  {
+    "name": "Sam",
+    "salary": 4300,
+    "row_num": 6,
+    "rnk": 6,
+    "dense": 5
+  },
+  {
+    "name": "Tariq",
+    "salary": 4300,
+    "row_num": 7,
+    "rnk": 6,
+    "dense": 5
+  },
+  {
+    "name": "Uma",
+    "salary": 3900,
+    "row_num": 8,
+    "rnk": 8,
+    "dense": 6
+  },
+  {
+    "name": "Viktor",
+    "salary": 3500,
+    "row_num": 9,
+    "rnk": 9,
+    "dense": 7
+  }
+]

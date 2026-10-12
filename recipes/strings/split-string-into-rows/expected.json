@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "tag": "postgres"
+  },
+  {
+    "id": 1,
+    "tag": "sql"
+  },
+  {
+    "id": 2,
+    "tag": "python"
+  },
+  {
+    "id": 3,
+    "tag": "duckdb"
+  },
+  {
+    "id": 3,
+    "tag": "sql"
+  },
+  {
+    "id": 3,
+    "tag": "wasm"
+  }
+]

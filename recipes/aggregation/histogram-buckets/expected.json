@@ -1,0 +1,18 @@
+[
+  {
+    "bucket_start": 0,
+    "orders": 2
+  },
+  {
+    "bucket_start": 50,
+    "orders": 2
+  },
+  {
+    "bucket_start": 100,
+    "orders": 1
+  },
+  {
+    "bucket_start": 150,
+    "orders": 3
+  }
+]

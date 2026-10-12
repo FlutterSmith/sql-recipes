@@ -1,0 +1,22 @@
+[
+  {
+    "weekday": 2,
+    "orders": 2
+  },
+  {
+    "weekday": 3,
+    "orders": 1
+  },
+  {
+    "weekday": 4,
+    "orders": 1
+  },
+  {
+    "weekday": 5,
+    "orders": 1
+  },
+  {
+    "weekday": 7,
+    "orders": 3
+  }
+]

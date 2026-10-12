@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Nadia",
+    "salary": 9800,
+    "band": 1
+  },
+  {
+    "name": "Omar",
+    "salary": 7200,
+    "band": 1
+  },
+  {
+    "name": "Priya",
+    "salary": 7200,
+    "band": 1
+  },
+  {
+    "name": "Rosa",
+    "salary": 6400,
+    "band": 2
+  },
+  {
+    "name": "Quentin",
+    "salary": 5100,
+    "band": 2
+  },
+  {
+    "name": "Sam",
+    "salary": 4300,
+    "band": 2
+  },
+  {
+    "name": "Tariq",
+    "salary": 4300,
+    "band": 3
+  },
+  {
+    "name": "Uma",
+    "salary": 3900,
+    "band": 3
+  },
+  {
+    "name": "Viktor",
+    "salary": 3500,
+    "band": 3
+  }
+]

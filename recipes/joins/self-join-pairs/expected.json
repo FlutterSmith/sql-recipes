@@ -1,0 +1,22 @@
+[
+  {
+    "category": "courses",
+    "first": "SQL course",
+    "second": "Python course"
+  },
+  {
+    "category": "hardware",
+    "first": "Mechanical keyboard",
+    "second": "USB-C hub"
+  },
+  {
+    "category": "hardware",
+    "first": "Mechanical keyboard",
+    "second": "Monitor arm"
+  },
+  {
+    "category": "hardware",
+    "first": "USB-C hub",
+    "second": "Monitor arm"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Mechanical keyboard",
+    "price": 120
+  },
+  {
+    "id": 2,
+    "name": "USB-C hub",
+    "price": 35
+  },
+  {
+    "id": 3,
+    "name": "Monitor arm",
+    "price": 85
+  },
+  {
+    "id": 4,
+    "name": "SQL course",
+    "price": 49
+  },
+  {
+    "id": 5,
+    "name": "Python course",
+    "price": 59
+  },
+  {
+    "id": 6,
+    "name": "Sticker pack",
+    "price": 5.49
+  }
+]

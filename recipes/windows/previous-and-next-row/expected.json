@@ -1,0 +1,44 @@
+[
+  {
+    "read_at": "2024-01-01 00:00:00",
+    "value": 20,
+    "previous": null,
+    "delta": null
+  },
+  {
+    "read_at": "2024-01-02 00:00:00",
+    "value": 21.5,
+    "previous": 20,
+    "delta": 1.5
+  },
+  {
+    "read_at": "2024-01-03 00:00:00",
+    "value": 19,
+    "previous": 21.5,
+    "delta": -2.5
+  },
+  {
+    "read_at": "2024-01-04 00:00:00",
+    "value": 22,
+    "previous": 19,
+    "delta": 3
+  },
+  {
+    "read_at": "2024-01-05 00:00:00",
+    "value": 23.5,
+    "previous": 22,
+    "delta": 1.5
+  },
+  {
+    "read_at": "2024-01-08 00:00:00",
+    "value": 18,
+    "previous": 23.5,
+    "delta": -5.5
+  },
+  {
+    "read_at": "2024-01-09 00:00:00",
+    "value": 18.5,
+    "previous": 18,
+    "delta": 0.5
+  }
+]

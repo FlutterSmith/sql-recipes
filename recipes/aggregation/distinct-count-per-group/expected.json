@@ -1,0 +1,14 @@
+[
+  {
+    "customer_id": 1,
+    "products": 4
+  },
+  {
+    "customer_id": 2,
+    "products": 3
+  },
+  {
+    "customer_id": 3,
+    "products": 4
+  }
+]

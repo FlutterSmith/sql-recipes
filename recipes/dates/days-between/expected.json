@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Ada Lovelace",
+    "days_to_first_order": 27
+  },
+  {
+    "name": "Grace Hopper",
+    "days_to_first_order": 31
+  },
+  {
+    "name": "Linus Torvalds",
+    "days_to_first_order": 21
+  }
+]

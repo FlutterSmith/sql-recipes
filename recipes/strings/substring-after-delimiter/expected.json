@@ -1,0 +1,14 @@
+[
+  {
+    "domain": "example.com",
+    "people": 2
+  },
+  {
+    "domain": "example.org",
+    "people": 1
+  },
+  {
+    "domain": "mail.example.net",
+    "people": 2
+  }
+]

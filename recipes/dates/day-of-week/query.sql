@@ -1,0 +1,6 @@
+SELECT
+    CAST(EXTRACT(ISODOW FROM ordered_at) AS INTEGER) AS weekday,
+    COUNT(*) AS orders
+FROM orders
+GROUP BY CAST(EXTRACT(ISODOW FROM ordered_at) AS INTEGER)
+ORDER BY weekday
